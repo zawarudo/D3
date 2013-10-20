@@ -1,0 +1,80 @@
+<html>
+<head>
+  <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
+</head>
+<body>
+  <div id="chart">
+  </div>
+  <script type="text/javascript">
+  initial();
+  
+  function initial(){
+  margin = {top: 50, right: 50, bottom: 50, left: 50},
+        w = 960 - margin.left - margin.right,
+        h = 500 - margin.top - margin.bottom;
+        
+  var outerSvg = d3.select("#chart")//Outer svg holding our tools and render window
+          .append("svg:svg")
+          .attr("width", w + margin.left + margin.right)
+          .attr("height", h + margin.top + margin.bottom)
+          .style("border-style", "dashed")
+          .style("border-width", "2px");
+
+    outerSvg.append("image") //"Refresh" Button
+      .attr("width", '30px')
+      .attr("height", '30px')
+      .attr("xlink:href", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHpSURBVGhD7c/bjsMwCEXR/v9Pd6xmW3JqwOBLrI683hIOYF7vH3cO2G3PAa8PPsZsOOB6/RdqcdMO8L/jSmoIuY0ewNqMvyaiDjSY+g9gyR01E9EIOiU9BzBVQsJENI7+u9gBTNKRMxHtwohC4ABmmIiaiMbRf+c9gBktpE1EI+iUtFcyw4eeFtI+9ChmHkCDAw0ONOha9/mQdqPNgQadlWCGiWgQzT70KNQy3TpyXRjhRptErtGnI9eLKRF0VnoOIDSAQRF0VoQCHQpCY5hV0P6XrsyX2AEkhjHug18ZfyUk7kb7+zBRe5OORGHPATb2SUgUvAdQfgpbK5QLt1+kJCSewlYJicx1AOVnsbtCOTsHLMPuCuXsHLAMuyuUs3PAMuyuUM7OAcuwu0I5Owcsw+4K5cx1QELiKWyVkMiqbwXlp7C1QrngPSAhsR77JCQK/+6AhKyExEpskpC4ix2QEFqDHQpCd8pfE6HZmK4gVOk5ICE3D3N15Cp6oYXcDEzUkZOYtRZyY5ilI6dolX1IB9HcQlox54ALPS2kfejRORL78AKTL7QDu1u8uYTB67HPJ5hej01u4YaEVbMxPaizLWHtDEzsMtSc8IReTBkwYcSFF/nQM8PMWVucA3Y7B+x2Dtjtxw94v/8AHyE+oPUCMP4AAAAASUVORK5CYII=")
+      .attr("onclick","render()");
+      
+      
+    render();
+  }
+  
+  function render(){
+  
+    d3.select('#chart svg svg').remove();
+    
+    innerW = w - margin.left - margin.right,
+        innerH = h - margin.top - margin.bottom,
+        dataNum = 12,
+        barWidth = w/dataNum,
+        color = '#CC6600',
+        interval = 2000; //2 seconds
+        
+        var svg = d3.select("#chart svg")
+          .append("svg:svg")
+          .attr("x", margin.left)
+          .attr("y", margin.top + margin.bottom)
+          .attr("width", innerW + margin.left + margin.right)
+          .attr("height", innerH + margin.top + margin.bottom)
+          .style("border-style", "dashed")
+          .style("border-width", "2px");
+
+      //Generate Dataset
+      var dataset = d3.range(dataNum).map(function(d,i) {
+        return {value: Math.random() * (h + margin.top + margin.bottom)/2 ,position: i};
+      });
+      
+      var datapoints = svg.append("svg:g").attr("id", "points");
+      
+      datapoints.selectAll("rect")
+          .data(dataset)
+          .enter()
+          .append("rect")
+          .attr("width", barWidth - 25)
+          .attr("x", function(d,i){ return (-barWidth * i+1)})
+          .attr("y", -h)
+          .style('fill', color)
+          .style('stroke-width','1')
+          .attr('transform','rotate(180)')
+          .attr("height", '0' )
+          .transition()
+          .attr("height", function(d){ return d.value })
+          .duration(interval * Math.random());
+          
+}
+
+
+  </script>
+</body>
+</html>
